@@ -21,18 +21,23 @@ def get_random_xkcd():
     return random_comic_data['img'], random_comic_data['title']
 
 
-def post_comic_to_telegram(bot, chat_id, image_url, title):
+def download_image(image_url, file_path):
     image_response = requests.get(image_url)
     image_response.raise_for_status()
 
-    file_path = 'comic.png'
     with open(file_path, 'wb') as file:
         file.write(image_response.content)
 
+
+def send_image_to_telegram(bot, chat_id, file_path, title):
     with open(file_path, 'rb') as file:
         bot.send_photo(chat_id=chat_id, photo=file, caption=title)
 
-    os.remove(file_path)
+
+def post_comic_to_telegram(bot, chat_id, image_url, title):
+    file_path = 'comic.png'
+    download_image(image_url, file_path)
+    send_image_to_telegram(bot, chat_id, file_path, title)
 
 
 def main():
@@ -44,13 +49,15 @@ def main():
     bot = Bot(token=telegram_bot_token)
 
     try:
-
         image_url, title = get_random_xkcd()
         post_comic_to_telegram(bot, telegram_group_id, image_url, title)
     except requests.exceptions.RequestException as e:
         print(f'Ошибка сети: {e}')
     except TelegramError as e:
         print(f'Ошибка Telegram API: {e}')
+    finally:
+        if os.path.exists('comic.png'):
+            os.remove('comic.png')
 
 
 if __name__ == "__main__":
