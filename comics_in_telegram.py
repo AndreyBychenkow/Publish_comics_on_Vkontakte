@@ -38,15 +38,15 @@ def post_comic_to_telegram(bot, chat_id, image_url, title):
 def main():
     load_dotenv()
 
-    TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_ACCESS_TOKEN')
-    TELEGRAM_GROUP_ID = os.getenv('TELEGRAM_CLIENT_ID')
+    telegram_bot_token = os.getenv('TELEGRAM_ACCESS_TOKEN')
+    telegram_group_id = os.getenv('TELEGRAM_CLIENT_ID')
 
-    bot = Bot(token=TELEGRAM_BOT_TOKEN)
+    bot = Bot(token=telegram_bot_token)
 
     try:
 
         image_url, title = get_random_xkcd()
-        post_comic_to_telegram(bot, TELEGRAM_GROUP_ID, image_url, title)
+        post_comic_to_telegram(bot, telegram_group_id, image_url, title)
     except requests.exceptions.RequestException as e:
         print(f'Ошибка сети: {e}')
     except TelegramError as e:
