@@ -38,6 +38,7 @@ def post_comic_to_telegram(bot, chat_id, image_url, title):
     file_path = 'comic.png'
     download_image(image_url, file_path)
     send_image_to_telegram(bot, chat_id, file_path, title)
+    return file_path
 
 
 def main():
@@ -48,16 +49,19 @@ def main():
 
     bot = Bot(token=telegram_bot_token)
 
+    file_path = None
+
     try:
         image_url, title = get_random_xkcd()
-        post_comic_to_telegram(bot, telegram_group_id, image_url, title)
+        file_path = post_comic_to_telegram(bot, telegram_group_id, image_url,
+                                           title)
     except requests.exceptions.RequestException as e:
         print(f'Ошибка сети: {e}')
     except TelegramError as e:
         print(f'Ошибка Telegram API: {e}')
     finally:
-        if os.path.exists('comic.png'):
-            os.remove('comic.png')
+        if file_path and os.path.exists(file_path):
+            os.remove(file_path)
 
 
 if __name__ == "__main__":
