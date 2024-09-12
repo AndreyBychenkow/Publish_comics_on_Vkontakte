@@ -38,8 +38,8 @@ def post_comic_to_telegram(bot, chat_id, image_url, title):
 def main():
     load_dotenv()
 
-    telegram_bot_token = os.getenv('TELEGRAM_ACCESS_TOKEN')
-    telegram_group_id = os.getenv('TELEGRAM_CLIENT_ID')
+    telegram_bot_token = os.environ['TELEGRAM_ACCESS_TOKEN']
+    telegram_group_id = os.environ['TELEGRAM_CLIENT_ID']
 
     bot = Bot(token=telegram_bot_token)
 
